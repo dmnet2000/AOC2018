@@ -3,6 +3,9 @@ package it.aoc18.d1;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class Day1b {
 
@@ -14,18 +17,46 @@ public class Day1b {
 
         String line = "";
 
-        int frequenza = 0;
+        List<Integer> listaCambi = new ArrayList<>();
         while ((line = br.readLine()) != null) {
-            //determino l'operatore
-            char op = line.charAt(0);
-            int val = Integer.parseInt(line.substring(1, line.length()));
-            //System.out.println(val + " " + op);
-            if (op == '+') {
-                frequenza += val;
-            } else {
-                frequenza -= val;
-            }
-            System.out.println(frequenza);
+            //determino l'operator
+            listaCambi.add(Integer.parseInt(line));
+        }
+        //Integer arr[] = {-6, +3, +8, +5, -6};
+        //listaCambi = new ArrayList<Integer>();
+        //for(int i =0; i<arr.length;i++){
+        //    listaCambi.add(arr[i]);
+        //}
+        Integer[] freq = {0};
+        List<Integer> frequenze = new ArrayList<>();
+        boolean t = false;
+        while(!t) {
+            for (int i = 0; i < listaCambi.size() ; i++) {
+                freq[0] = freq[0] + listaCambi.get(i);
+                System.out.println(freq[0]);
+                if (i > 0) {
+                    boolean trovato = false;
+                    for (Integer fr : frequenze) {
+                        if (fr.equals(freq[0])) {
+                            trovato = true;
+                            break;
+                        }
+                    }
+                    if (trovato) {
+                        t = true;
+                        break;
+                    }
+                    frequenze.add(freq[0]);
+                } else {
+                    frequenze.add(freq[0]);
+                }
+            }//for
+        }
+        if (t) {
+            frequenze.forEach(val -> {
+                System.out.println(val);
+            });
+            System.out.println("freq = " + freq[0]);
         }
     }
 
