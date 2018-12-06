@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Day1b {
 
@@ -26,36 +28,30 @@ public class Day1b {
         //for(int i =0; i<arr.length;i++){
         //    listaCambi.add(arr[i]);
         //}
-        Integer[] freq = {0};
-        List<Integer> frequenze = new ArrayList<>();
+        Integer freq = 0;
+        Map<Integer, Integer> frequenze = new HashMap<>();
         boolean t = false;
-        while(!t) {
-            for (int i = 0; i < listaCambi.size() ; i++) {
-                freq[0] = freq[0] + listaCambi.get(i);
-                System.out.println(freq[0]);
+        while (!t) {
+            for (int i = 0; i < listaCambi.size(); i++) {
+                freq = freq + listaCambi.get(i);
+//                System.out.println(freq);
                 if (i > 0) {
-                    boolean trovato = false;
-                    for (Integer fr : frequenze) {
-                        if (fr.equals(freq[0])) {
-                            trovato = true;
-                            break;
-                        }
-                    }
-                    if (trovato) {
+                    if (frequenze.get(freq) != null) {
                         t = true;
                         break;
+                    } else {
+                        frequenze.put(freq, freq);
                     }
-                    frequenze.add(freq[0]);
                 } else {
-                    frequenze.add(freq[0]);
+                    frequenze.put(freq, freq);
                 }
             }//for
         }
         if (t) {
-            frequenze.forEach(val -> {
-                System.out.println(val);
-            });
-            System.out.println("freq = " + freq[0]);
+            // frequenze.keySet().stream().forEach(val -> {
+            //     System.out.println(val);
+            // });
+            System.out.println("freq = " + freq);
         }
     }
 
