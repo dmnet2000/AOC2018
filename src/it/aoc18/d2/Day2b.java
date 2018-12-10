@@ -1,13 +1,11 @@
 package it.aoc18.d2;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.*;
-import java.util.List;
 
-public class Day2a {
+public class Day2b {
 
 
     public static void main(String[] Args) throws Exception {
@@ -23,61 +21,46 @@ public class Day2a {
             listaRighe.add(line);
         }
 
-        //todo: rimuovere dopo controllo
-        /*
-        listaRighe = new ArrayList<String>();
-        String[] lista = {"abcdef",
-                 "bababc",
-                "abbcde", "abcccd", "aabcdd", "abcdee", "ababab"
-        };
-        for (String str : lista
-        ) {
-            listaRighe.add(str);
-
-        }
-*/
-        List<Map<String, Integer>> list = new ArrayList<Map<String, Integer>>();
-        listaRighe.forEach(row -> {
-            Map<String, Integer> map = new HashMap<>();
-            for (int i = 0; i < row.length(); i++) {
-                char c = row.charAt(i);
-                if (map.get(String.valueOf(c)) == null) {
-                    map.put(String.valueOf(c), 1);
-                } else {
-                    int val = map.get(String.valueOf(c));
-                    map.put(String.valueOf(c), val + 1);
+        Map<String, Pair> mappa = new HashMap<String,Pair>();
+        for(int i = 0; i<listaRighe.size();i++){
+            String riferimento = listaRighe.get(i);
+            for(int j=i+1; j<listaRighe.size();j++){
+                String controllo = listaRighe.get(j);
+                //controllo caratteri uguali tra le stringhe
+                int count = 0;
+                String str = "";
+                for(int k = 0; k<riferimento.length();k++){
+                    if(riferimento.charAt(k)== controllo.charAt(k)){
+                        count++;
+                        str = str+riferimento.charAt(k);
+                    }
                 }
-
+                Pair pair = new Pair();
+                pair.eq=count;
+                pair.value1=riferimento;
+                pair.value1=controllo;
+                pair.valueEquals=str;
+                mappa.put(riferimento+"|"+controllo, pair);
             }
+        }
+        Set<String> key= mappa.keySet();
 
-            list.add(map);
+        key.forEach(k->{
+            if(mappa.get(k).eq == mappa.get(k).value1.length()-1){
+                System.out.println("diff1="+k);
+                System.out.println("streq="+mappa.get(k).valueEquals);
+            }
         });
 
-        final Integer[] count2 = {0};
-        final Integer[] count3 = {0};
 
-        for (Map<String, Integer> mappa : list) {
-            Set<String> key = mappa.keySet();
-            System.out.println("-----------------------");
-            final boolean[] b2 = {false};
-            final boolean[] b3 = {false};
-            key.forEach(k -> {
-                if(mappa.get(k)==2 && !b2[0]){
-                    count2[0]++;
-                    b2[0]=true;
-                }
-                if(mappa.get(k)==3 && !b3[0]){
-                    count3[0]++;
-                    b3[0]=true;
-                }
-                System.out.println(k + "=" + mappa.get(k));
-            });
-            System.out.println("-----------------------");
+    }
+    static class Pair {
+        public Pair(){
+
         }
-        System.out.println(count2[0]);
-        System.out.println(count3[0]);
-        System.out.println(count2[0]*count3[0]);
-
-
+        public String value1;
+        public String value2;
+        public String valueEquals;
+        public int eq;
     }
 }
