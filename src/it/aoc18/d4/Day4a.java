@@ -21,33 +21,7 @@ public class Day4a {
         }
 
         listaRighe.forEach(ln -> System.out.println(ln));
-        //TODO --TEST REMOVE
-        String[] test =
-                {"[1518-11-01 00:00] Guard #10 begins shift",
-                        "[1518-11-01 00:05] falls asleep",
-                        "[1518-11-01 00:25] wakes up",
-                        "[1518-11-01 00:30] falls asleep",
-                        "[1518-11-01 00:55] wakes up",
-                        "[1518-11-01 23:58] Guard #99 begins shift",
-                        "[1518-11-02 00:40] falls asleep",
-                        "[1518-11-02 00:50] wakes up",
-                        "[1518-11-03 00:05] Guard #10 begins shift",
-                        "[1518-11-03 00:24] falls asleep",
-                        "[1518-11-03 00:29] wakes up",
-                        "[1518-11-04 00:02] Guard #99 begins shift",
-                        "[1518-11-04 00:36] falls asleep",
-                        "[1518-11-04 00:46] wakes up",
-                        "[1518-11-05 00:03] Guard #99 begins shift",
-                        "[1518-11-05 00:45] falls asleep",
-                        "[1518-11-05 00:55] wakes up"};
-        listaRighe = new ArrayList<>();
 
-        for (int i = 0; i < test.length; i++) {
-            listaRighe.add(test[i]);
-        }
-        System.out.println("-------------------------------------");
-        listaRighe.forEach(ln -> System.out.println(ln));
-        //end TEST
         List<Operation> operationList = new ArrayList<>();
 
         listaRighe.forEach(ln -> {
@@ -82,6 +56,7 @@ public class Day4a {
         operationList.forEach(op -> System.out.println("ora:" + op.data + "|ora=" + op.ora + "|id=" + op.id + "| op=" + op.operation));
         Map<String, Integer> mappaIdSleep = new HashMap<>();
         Map<String, Integer> mappaIdNotSleep = new HashMap<>();
+        Map<String, List<String[]>> mappaMinuti = new HashMap<>();
         id = "";
         int oraStart = 0;
         int minStart = 0;
@@ -93,6 +68,11 @@ public class Day4a {
                     mappaIdSleep.put(id, 0);
 
                 }
+                if (mappaMinuti.get(id) == null) {
+                    List<String[]> listaMinuti = new ArrayList<>();
+                    mappaMinuti.put(id, listaMinuti);
+                }
+
                 st = Stato.START;
             }
             if (op.operation.contains("falls asleep") && (st == Stato.START || st == Stato.END_SLEEP)) {
@@ -112,7 +92,8 @@ public class Day4a {
                     for (int i = minStart; i <= minEnd; i++) {
                         minuti[i] = "X";
                     }
-                    op.listaMinuti.add(minuti);
+                    mappaMinuti.get(id).add(minuti);
+
                 } else {
                     if (oraEnd - oraStart > 1) {
                         value = value + (((oraEnd - oraStart) - 1) * 60) + (60 - minStart) + minEnd;
@@ -121,13 +102,15 @@ public class Day4a {
                             for (int j = 0; j <= 59; i++) {
                                 ora[j] = "X";
                             }
-                            op.listaMinuti.add(ora);
+                            mappaMinuti.get(id).add(ora);
+
                         }
                         String[] minuti = new String[60];
                         for (int i = minStart; i <= minEnd; i++) {
                             minuti[i] = "X";
                         }
-                        op.listaMinuti.add(minuti);
+                        mappaMinuti.get(id).add(minuti);
+
                     } else {
                         value = value + (60 - minStart) + minEnd;
                         String[] minuti = new String[60];
@@ -138,8 +121,8 @@ public class Day4a {
                         for (int i = 0; i <= 59; i++) {
                             ora[i] = "X";
                         }
-                        op.listaMinuti.add(minuti);
-                        op.listaMinuti.add(ora);
+                        mappaMinuti.get(id).add(minuti);
+                        mappaMinuti.get(id).add(ora);
                     }
                 }
 
@@ -164,20 +147,19 @@ public class Day4a {
             minMaxSlip[i] = 0;
         }
 
-        for (Operation op : operationList) {
-            if (op.id.equals(idMaxSLeep[0])) {
-                for (String[] minuti : op.listaMinuti) {
-                    for (int i = 0; i < 60; i++) {
-                        if (minuti[i].equals("X")) {
-                            minMaxSlip[i] = minMaxSlip[i] + 1;
-                        }
-                    }
+
+        List<String[]> listaMinuti = mappaMinuti.get(idMaxSLeep[0]);
+        for (String[] min : listaMinuti) {
+            for (int i = 0; i < 60; i++) {
+                if (min[i] != null && min[i].equals("X")) {
+                    minMaxSlip[i] = minMaxSlip[i] + 1;
                 }
             }
         }
 
         int index = 0;
         int val = 0;
+
         for (int i = 0; i < 60; i++) {
             if (minMaxSlip[i] > val) {
                 val = minMaxSlip[i];
@@ -185,7 +167,8 @@ public class Day4a {
             }
         }
 
-        System.out.print("result = " + Integer.parseInt(idMaxSLeep[0]) * index);
+
+        System.out.print("result = " + Integer.parseInt(idMaxSLeep[0].trim()) * index);
     }
 
 
@@ -194,10 +177,8 @@ public class Day4a {
         public String operation;
         public String id;
         public String ora;
-        public List<String[]> listaMinuti;
 
         public Operation() {
-            listaMinuti = new ArrayList<>();
         }
     }
 
