@@ -55,7 +55,6 @@ public class Day4a {
         }
         operationList.forEach(op -> System.out.println("ora:" + op.data + "|ora=" + op.ora + "|id=" + op.id + "| op=" + op.operation));
         Map<String, Integer> mappaIdSleep = new HashMap<>();
-        Map<String, Integer> mappaIdNotSleep = new HashMap<>();
         Map<String, List<String[]>> mappaMinuti = new HashMap<>();
         id = "";
         int oraStart = 0;
@@ -142,24 +141,30 @@ public class Day4a {
 
         }
 
-        int[] minMaxSlip = new int[60];
-        for (int i = 0; i < 60; i++) {
-            minMaxSlip[i] = 0;
-        }
+        Map<String, int[]> mappaMinutiSleep = new HashMap<>();
 
-
-        List<String[]> listaMinuti = mappaMinuti.get(idMaxSLeep[0]);
-        for (String[] min : listaMinuti) {
+        Set<String> ids = mappaMinuti.keySet();
+        for (String kid : ids) {
+            int[] minMaxSlip = new int[60];
             for (int i = 0; i < 60; i++) {
-                if (min[i] != null && min[i].equals("X")) {
-                    minMaxSlip[i] = minMaxSlip[i] + 1;
+                minMaxSlip[i] = 0;
+            }
+
+
+            List<String[]> listaMinuti = mappaMinuti.get(kid);
+            for (String[] min : listaMinuti) {
+                for (int i = 0; i < 60; i++) {
+                    if (min[i] != null && min[i].equals("X")) {
+                        minMaxSlip[i] = minMaxSlip[i] + 1;
+                    }
                 }
             }
+            mappaMinutiSleep.put(kid, minMaxSlip);
         }
-
+        //---
         int index = 0;
         int val = 0;
-
+        int[] minMaxSlip = mappaMinutiSleep.get(idMaxSLeep[0]);
         for (int i = 0; i < 60; i++) {
             if (minMaxSlip[i] > val) {
                 val = minMaxSlip[i];
@@ -167,8 +172,23 @@ public class Day4a {
             }
         }
 
-
         System.out.print("result = " + Integer.parseInt(idMaxSLeep[0].trim()) * index);
+        int valMaxSleep = 0;
+        String idMakSleep = "";
+        int minMaxSlipTot = 0;
+        for (String kid : ids) {
+            int[] countSleepArr = mappaMinutiSleep.get(kid);
+            for (int i = 0; i < 60; i++) {
+                if (countSleepArr[i] > valMaxSleep) {
+                    valMaxSleep = countSleepArr[i];
+                    idMakSleep = kid;
+                    minMaxSlipTot = i;
+                }
+            }
+        }
+
+        System.out.print("result part2= " + Integer.parseInt(idMakSleep.trim()) * minMaxSlipTot);
+
     }
 
 
